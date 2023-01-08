@@ -39,8 +39,6 @@ namespace Assets.Scripts.UI
         private GameObject _confirmEmail;
         private FieldsTabulation tabulation;
 
-        //private LambdaManager _lambdaManager;
-
         private void displayComponentsFromAuthStatus(bool loggedIn)
         {
             if (loggedIn)
@@ -121,9 +119,6 @@ namespace Assets.Scripts.UI
         {
             SceneManager.LoadScene("GameScene");
             Debug.Log("Changed to GameScene");
-
-            // call to lambda to demonstrate use of credentials
-            //_lambdaManager.ExecuteLambda();
         }
 
 
