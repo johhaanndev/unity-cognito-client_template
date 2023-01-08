@@ -17,14 +17,14 @@ namespace Assets.Scripts.UI
         public static Amazon.RegionEndpoint Region = Amazon.RegionEndpoint.EUWest1;
 
         // In production, should probably keep these in a config file
-        const string IdentityPool = "eu-west-1:576320ac-d8fa-4fcf-8895-f5f6c1def583"; //insert your Cognito User Pool ID, found under General Settings
-        const string AppClientID = "7uantgoe4iokjoj2lm96l565f1"; //insert App client ID, found under App Client Settings
-        const string userPoolId = "eu-west-1_6CjwAvxOC";
+        const string IdentityPool = "< YOUR COGNITO USER POOL ID >";
+        const string AppClientID = "< YOUR COGNITO APP CLIENT ID >";
+        const string userPoolId = "< YOUR COGNITO USER POOL ID >";
 
         private AmazonCognitoIdentityProviderClient _provider;
-        private CognitoAWSCredentials _cognitoAWSCredentials;
-        private static string _userid = "";
-        private CognitoUser _user;
+        private CognitoAWSCredentials cognitoAWSCredentials;
+        private static string userid = "";
+        private CognitoUser user;
 
         public async Task<bool> RefreshSession()
         {
@@ -74,9 +74,9 @@ namespace Assets.Scripts.UI
                     SaveDataManager.SaveJsonData(userSessionCacheToUpdate);
 
                     // update credentials with the latest access token
-                    _cognitoAWSCredentials = user.GetCognitoAWSCredentials(IdentityPool, Region);
+                    cognitoAWSCredentials = user.GetCognitoAWSCredentials(IdentityPool, Region);
 
-                    _user = user;
+                    this.user = user;
 
                     return true;
                 }
@@ -115,23 +115,23 @@ namespace Assets.Scripts.UI
             {
                 AuthFlowResponse authFlowResponse = await user.StartWithSrpAuthAsync(authRequest).ConfigureAwait(false);
 
-                _userid = await GetUserIdFromProvider(authFlowResponse.AuthenticationResult.AccessToken);
+                userid = await GetUserIdFromProvider(authFlowResponse.AuthenticationResult.AccessToken);
                 // Debug.Log("Users unique ID from cognito: " + _userid);
 
                 UserSessionCache userSessionCache = new UserSessionCache(
                    authFlowResponse.AuthenticationResult.IdToken,
                    authFlowResponse.AuthenticationResult.AccessToken,
                    authFlowResponse.AuthenticationResult.RefreshToken,
-                   _userid);
+                   userid);
 
                 SaveDataManager.SaveJsonData(userSessionCache);
 
                 // This how you get credentials to use for accessing other services.
                 // This IdentityPool is your Authorization, so if you tried to access using an
                 // IdentityPool that didn't have the policy to access your target AWS service, it would fail.
-                _cognitoAWSCredentials = user.GetCognitoAWSCredentials(IdentityPool, Region);
+                cognitoAWSCredentials = user.GetCognitoAWSCredentials(IdentityPool, Region);
 
-                _user = user;
+                this.user = user;
 
                 return true;
             }
@@ -182,14 +182,14 @@ namespace Assets.Scripts.UI
         public string GetUsersId()
         {
             // Debug.Log("GetUserId: [" + _userid + "]");
-            if (_userid == null || _userid == "")
+            if (userid == null || userid == "")
             {
                 // load userid from cached session 
                 UserSessionCache userSessionCache = new UserSessionCache();
                 SaveDataManager.LoadJsonData(userSessionCache);
-                _userid = userSessionCache.getUserId();
+                userid = userSessionCache.getUserId();
             }
-            return _userid;
+            return userid;
         }
 
         // we call this once after the user is authenticated, then cache it as part of the session for later retrieval 
@@ -223,7 +223,7 @@ namespace Assets.Scripts.UI
         // So if you had other sessions for your website or app, those would also be killed.
         public async void SignOut()
         {
-            await _user.GlobalSignOutAsync();
+            await user.GlobalSignOutAsync();
 
             // Important! Make sure to remove the local stored tokens 
             UserSessionCache userSessionCache = new UserSessionCache("", "", "", "");
@@ -235,7 +235,7 @@ namespace Assets.Scripts.UI
         // access to the user's authenticated credentials to be used to call other AWS APIs
         public CognitoAWSCredentials GetCredentials()
         {
-            return _cognitoAWSCredentials;
+            return cognitoAWSCredentials;
         }
 
         // access to the user's access token to be used wherever needed - may not need this at all.
