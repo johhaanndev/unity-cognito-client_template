@@ -3,6 +3,7 @@ using Amazon.Lambda;
 using Amazon.Lambda.Model;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Assets.Scripts.UI;
 
 // This script just demonstrates we can use credentials from an authenticated user to call AWS APIs
 public class LambdaManager : MonoBehaviour
