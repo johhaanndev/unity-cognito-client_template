@@ -204,6 +204,7 @@ public class UIInputManager : MonoBehaviour
     {
         CachePath = Application.persistentDataPath;
 
+        // Heriarchy objects references
         _loginInterface = GameObject.Find("LoginInterface");
         _registerInterface = GameObject.Find("RegisterInterface");
         _authenticatedInterface = GameObject.Find("AuthInterface");
