@@ -51,8 +51,7 @@ namespace Assets.Scripts.UI
                        userSessionCache.getAccessToken(),
                        userSessionCache.getRefreshToken(),
                        issued,
-                       DateTime.Now.AddDays(30)); // TODO: need to investigate further. 
-                                                  // It was my understanding that this should be set to when your refresh token expires...
+                       DateTime.Now.AddDays(30));
 
                     // Attempt refresh token call
                     AuthFlowResponse authFlowResponse = await user.StartWithRefreshTokenAuthAsync(new InitiateRefreshTokenAuthRequest
